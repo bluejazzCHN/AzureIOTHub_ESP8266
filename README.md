@@ -6,6 +6,9 @@ To run demo, should meet below
 + ESP8266 devkit_C
 + DHT11
 + Azure Subscription
+   + IOTHub
+   + StreamAnalysis
+   + PowerBI
 + arduino IDE
 
 # Description
