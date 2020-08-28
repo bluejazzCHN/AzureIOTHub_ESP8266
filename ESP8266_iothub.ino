@@ -5,9 +5,9 @@
 
 #include "DHTesp.h"
 
-#define IOT_CONFIG_WIFI_SSID            "ZSJ_HOME"
-#define IOT_CONFIG_WIFI_PASSWORD        "QQqq11!!"
-#define DEVICE_CONNECTION_STRING    "HostName=zsjmcuiothub.azure-devices.net;DeviceId=esp8266;SharedAccessKey=MjbHk90QfmD3X8IizuaTvpqTSC63JXV//CdKUm531rE="
+#define IOT_CONFIG_WIFI_SSID            ""
+#define IOT_CONFIG_WIFI_PASSWORD        ""
+#define DEVICE_CONNECTION_STRING    "Your iot device connection string from portal of azure."
 
 #define SAMPLE_MQTT
 
