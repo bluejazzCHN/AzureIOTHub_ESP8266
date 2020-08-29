@@ -1,7 +1,7 @@
 # AzureIOTHub_ESP8266
 ESP8266 gets local sensor data to send to auze iothub.
 # Requirement 
-To run demo, should meet below 
+To run demo, should meet below conditions:
 
 + ESP8266 devkit_C
 + DHT11
