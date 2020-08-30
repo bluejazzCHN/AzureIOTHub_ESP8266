@@ -19,6 +19,12 @@ Demo include:
 - how to init azure iothub client
 - how to send message and wait callback message
 
+Azure IOTHub Steps:
+- login azure portal
+- create IOTHub
+- create device
+- copy connection string for the selected device
+
 # Attention
 Navigate to where your esp8266 board package is located, typically in C:\Users\<your username>\AppData\Local\Arduino15\packages on Windows and ~/.arduino15/packages/ on Linux
 
