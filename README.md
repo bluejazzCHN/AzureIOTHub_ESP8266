@@ -3,7 +3,7 @@
 
 - Architecture ：
 ```
-   sensor <--> mcu <--> iothub <--> streamanalysis <--> powerbi
+   sensor <--> mcu <--> iothub --> streamanalysis --> powerbi
                            ^                          
                            |                      
                        event hub                      
