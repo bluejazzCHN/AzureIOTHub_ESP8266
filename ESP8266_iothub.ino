@@ -31,7 +31,6 @@ DHTesp dht;
 #include "iothubtransportmqtt.h"
 #endif // SAMPLE_MQTT
 
-
 static const char ssid[] = IOT_CONFIG_WIFI_SSID;
 static const char pass[] = IOT_CONFIG_WIFI_PASSWORD;
 
@@ -97,7 +96,6 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT receive_message_callback(IOTHUB_MESSAGE_
   {
     messageId = "<null>";
   }
-
   // Message content
   if (IoTHubMessage_GetByteArray(message, (const unsigned char**)&buffer, &size) != IOTHUB_MESSAGE_OK)
   {
@@ -106,39 +104,22 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT receive_message_callback(IOTHUB_MESSAGE_
   else
   {
     LogInfo("Received Message [%d]\r\n Message ID: %s\r\n Data: <<<%.*s>>> & Size=%d\r\n", *counter, messageId, (int)size, buffer, (int)size);
-    // If we receive the word 'quit' then we stop running
-//    if ( size == 4)
-//    {
-//      Serial.print("False:");
-//      Serial.println(size);
-//      g_run = false;
-//    }
-//    if (size == 5)
-//    {
-//      Serial.print("True:");
-//      Serial.println(size);
-//      g_run = true;
-//    }
 
-        if (size == (strlen(stop_msg) * sizeof(char)) && memcmp(buffer, stop_msg, size) == 0)
-        {
-          g_run = false;
-          Serial.printf("Get c-command:%s", stop_msg);
-        }
-        if (size == (strlen(start_msg) * sizeof(char)) && memcmp(buffer, start_msg, size) == 0)
-        {
-          g_run = true;
-          Serial.printf("Get c-command:%s", start_msg);
-        }
+    //  receive the word 'stop' then we stop running
+    if (size == (strlen(stop_msg) * sizeof(char)) && memcmp(buffer, stop_msg, size) == 0)
+    {
+      g_run = false;
+      Serial.printf("Get c-command:%s\n", stop_msg);
+    }
+    //  receive the word 'stop' then we stop running
+    if (size == (strlen(start_msg) * sizeof(char)) && memcmp(buffer, start_msg, size) == 0)
+    {
+      g_run = true;
+      Serial.printf("Get c-command:%s\n", start_msg);
+    }
   }
-
-  /* Some device specific action code goes here... */
-  //  (*counter)++;
-  //  IoTHubDeviceClient_LL_DoWork(device_ll_handle);
-  //  ThreadAPI_Sleep(3);
   return IOTHUBMESSAGE_ACCEPTED;
 }
-
 
 /* -- send_confirm_callback --
    Callback method which executes upon confirmation that a message originating from this device has been received by the IoT Hub in the cloud.
@@ -178,12 +159,8 @@ static void reset_esp_helper()
   // Read from local serial
   if (Serial.available()) {
     String ebit = Serial.readStringUntil('\n');// s1 is String type variable.
-    Serial.print("Received Data: ");
-    Serial.println(ebit);//display same received Data back in serial monitor.
-
-    // Restart device upon receipt of 'exit' call.
-    //    int e_start = s1.indexOf('e');
-    //    String ebit = (String) s1.substring(e_start, e_start + 4);
+    Serial.print("Received Data:");
+    Serial.println(ebit);
     if (ebit == exit_msg)
     {
       ESP.restart();
@@ -199,7 +176,6 @@ static void reset_esp_helper()
   }
 #endif // is_esp_board
 }
-
 
 /* -- run_demo --
    Runs active task of sending telemetry to IoTHub
@@ -238,7 +214,8 @@ static void clearIOTHandler()
   return;
 }
 
-void setup() {
+static void IOTHubInitial()
+{
   // Select the Protocol to use with the connection
 #ifdef SAMPLE_MQTT
   IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = MQTT_Protocol;
@@ -246,11 +223,6 @@ void setup() {
 #ifdef SAMPLE_HTTP
   IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = HTTP_Protocol;
 #endif // SAMPLE_HTTP
-
-  sample_init(ssid, pass);
-  dht.setup(14, DHTesp::DHT11);
-  Serial.begin(115200);
-
   // Used to initialize IoTHub SDK subsystem
   (void)IoTHub_Init();
   // Create the iothub handle here
@@ -273,8 +245,7 @@ void setup() {
     // Example sdk status tracing for troubleshooting
     bool traceOn = true;
     IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_LOG_TRACE, &traceOn);
-#endif // SAMPLE_HTTP
-
+#endif
     // Setting the Trusted Certificate.
     IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_TRUSTED_CERT, certificates);
 
@@ -296,10 +267,19 @@ void setup() {
   }
 }
 
+void setup() {
+  Serial.begin(115200);
+//  init wifi
+  sample_init(ssid, pass);
+// init dht11
+  dht.setup(14, DHTesp::DHT11);
+//  init iothub
+  IOTHubInitial();
+}
+
 void loop(void)
 {
   delay(5000);
-
   if (g_run )
   {
     getTHData();
@@ -308,7 +288,6 @@ void loop(void)
   }
   else
   {
- 
   }
   doWork();
   reset_esp_helper();
