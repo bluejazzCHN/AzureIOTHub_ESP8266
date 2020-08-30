@@ -1,5 +1,16 @@
 # AzureIOTHub_ESP8266
-ESP8266 gets local sensor data to send to auze iothub.
+- ESP8266 gets local sensor data to send to auze iothub.
+
+- Architecture ：
+```
+   sensor <--> mcu <--> iothub <--> streamanalysis <--> powerbi
+                           ^                          
+                           |                      
+                       event hub                      
+                           ^                         
+                           |                         
+                      cloud command
+```                      
 # Requirement 
 To run demo, should meet below conditions:
 
