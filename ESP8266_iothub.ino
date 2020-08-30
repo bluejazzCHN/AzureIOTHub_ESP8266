@@ -5,9 +5,9 @@
 
 #include "DHTesp.h"
 
-#define IOT_CONFIG_WIFI_SSID            ""
-#define IOT_CONFIG_WIFI_PASSWORD        ""
-#define DEVICE_CONNECTION_STRING    "Your iot device connection string from portal of azure."
+#define IOT_CONFIG_WIFI_SSID            "ZSJ_HOME"
+#define IOT_CONFIG_WIFI_PASSWORD        "QQqq11!!"
+#define DEVICE_CONNECTION_STRING    "HostName=zsjmcuiothub.azure-devices.net;DeviceId=esp8266;SharedAccessKey=MjbHk90QfmD3X8IizuaTvpqTSC63JXV//CdKUm531rE="
 
 #define SAMPLE_MQTT
 
@@ -107,18 +107,35 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT receive_message_callback(IOTHUB_MESSAGE_
   {
     LogInfo("Received Message [%d]\r\n Message ID: %s\r\n Data: <<<%.*s>>> & Size=%d\r\n", *counter, messageId, (int)size, buffer, (int)size);
     // If we receive the word 'quit' then we stop running
-    if (size == (strlen(stop_msg) * sizeof(char)) && memcmp(buffer, stop_msg, size) == 0)
-    {
-      g_run = false;
-    }
-    if (size == (strlen(start_msg) * sizeof(char)) && memcmp(buffer, start_msg, size) == 0)
-    {
-      g_run = true;
-    }
+//    if ( size == 4)
+//    {
+//      Serial.print("False:");
+//      Serial.println(size);
+//      g_run = false;
+//    }
+//    if (size == 5)
+//    {
+//      Serial.print("True:");
+//      Serial.println(size);
+//      g_run = true;
+//    }
+
+        if (size == (strlen(stop_msg) * sizeof(char)) && memcmp(buffer, stop_msg, size) == 0)
+        {
+          g_run = false;
+          Serial.printf("Get c-command:%s", stop_msg);
+        }
+        if (size == (strlen(start_msg) * sizeof(char)) && memcmp(buffer, start_msg, size) == 0)
+        {
+          g_run = true;
+          Serial.printf("Get c-command:%s", start_msg);
+        }
   }
 
   /* Some device specific action code goes here... */
-  (*counter)++;
+  //  (*counter)++;
+  //  IoTHubDeviceClient_LL_DoWork(device_ll_handle);
+  //  ThreadAPI_Sleep(3);
   return IOTHUBMESSAGE_ACCEPTED;
 }
 
@@ -206,10 +223,12 @@ static void sendMessageToIOTHub(char * input)
   // The message is copied to the sdk so the we can destroy it
   IoTHubMessage_Destroy(message_handle);
   messages_sent++;
+}
+static void doWork()
+{
   IoTHubDeviceClient_LL_DoWork(device_ll_handle);
   ThreadAPI_Sleep(3);
 }
-
 /*IOTHub client destroy*/
 static void clearIOTHandler()
 {
@@ -279,7 +298,7 @@ void setup() {
 
 void loop(void)
 {
-  delay(10000);
+  delay(5000);
 
   if (g_run )
   {
@@ -289,6 +308,8 @@ void loop(void)
   }
   else
   {
+ 
   }
+  doWork();
   reset_esp_helper();
 }
